@@ -1,0 +1,89 @@
+openapi: 3.0.0
+info:
+  title: Diagram Rendering Server
+  description: API for rendering PlantUML and Mermaid diagrams
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+paths:
+  /render/{type}:
+    get:
+      summary: Render a diagram using GET method
+      parameters:
+        - in: path
+          name: type
+          required: true
+          schema:
+            type: string
+            enum: [plantuml, mermaid]
+          description: Type of diagram to render
+        - in: query
+          name: diagram
+          required: true
+          schema:
+            type: string
+          description: The diagram content to render
+        - in: query
+          name: output
+          required: true
+          schema:
+            type: string
+            enum: [svg, png]
+          description: The diagram content to render
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    description: URL to the rendered PlantUML diagram
+                  svg:
+                    type: string
+                    description: SVG content for Mermaid diagram
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+    post:
+      summary: Render a diagram using POST method
+      parameters:
+        - in: path
+          name: type
+          required: true
+          schema:
+            type: string
+            enum: [plantuml, mermaid]
+          description: Type of diagram to render
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                diagram:
+                  type: string
+                  description: The diagram content to render
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    description: URL to the rendered PlantUML diagram
+                  svg:
+                    type: string
+                    description: SVG content for Mermaid diagram
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
