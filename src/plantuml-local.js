@@ -14,7 +14,7 @@ async function renderPlantUMLLocally(diagram, output) {
         await fs.writeFile(inputFile, diagram);
 
         // Execute PlantUML jar to generate SVG
-await new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             const plantuml = spawn('java', [
                 '-jar',
                 path.join(__dirname, '../lib/plantuml.jar'),
@@ -40,11 +40,11 @@ await new Promise((resolve, reject) => {
                 else reject(new Error(`PlantUML process exited with code ${code}`));
             });
         });
-        return await fs.readFile(outputFile, 'utf8');
+        const fileBuffer = await fs.readFile(outputFile);
+        return fileBuffer.toString('base64');
     } finally {
         // Cleanup temp files
         await fs.rm(tempDir, {recursive: true, force: true});
     }
 }
-
 module.exports = {renderPlantUMLLocally};

@@ -69,6 +69,10 @@ paths:
                 diagram:
                   type: string
                   description: The diagram content to render
+                output:
+                  type: string
+                  enum: [png,svg]
+                  description: The diagram content to render
       responses:
         '200':
           description: Successful response

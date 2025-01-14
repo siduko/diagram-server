@@ -2,8 +2,7 @@ const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const cors = require('cors');
-const plantumlEncoder = require('plantuml-encoder');
-// Mermaid will be dynamically imported when needed
+const {renderPlantUMLLocally} = require("./plantuml-local");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -54,16 +53,16 @@ app.post('/render/:type', async (req, res) => {
     }
 
     try {
-        let result;
+        let contentFile;
         switch (type.toLowerCase()) {
             case 'plantuml':
                 const {renderPlantUMLLocally} = require('./plantuml-local');
-                const contentFile = await renderPlantUMLLocally(diagram, output);
-                return res.json({file: Buffer.from(contentFile).toString('base64')});
+                contentFile = await renderPlantUMLLocally(diagram, output);
+                return res.json({file: contentFile});
             case 'mermaid':
-                const mermaidModule = await import('mermaid');
-                result = await mermaidModule.default.render('diagram', diagram);
-                return res.json({file: Buffer.from(result[output]).toString('base64')});
+                const {renderMermaidLocally} = require('./mermaid-local');
+                contentFile = await renderMermaidLocally(diagram, output);
+                return res.json({file: contentFile});
             default:
                 return res.status(400).json({error: 'Unsupported diagram type'});
         }
